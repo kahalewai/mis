@@ -1,10 +1,18 @@
 # MCP Integrity Standard
 
 **Status:** Public Draft for Community Review
+
 **Date:** February 24, 2026
+
 **Version:** v1.0.0
+
 **License:** Apache License 2.0
+
 **Audience:** MCP server developers, MCP client developers, MCP host application developers, security architects, AI platform builders, registry operators, security tool vendors
+
+<br>
+
+### Begin MCP Integrity Standard v1.0.0
 
 <br>
 
@@ -870,6 +878,6 @@ Error codes use the `-33xxx` range to avoid conflicts with MCP's reserved ranges
 - **RFC 7517** — JSON Web Key (JWK)
 - **OWASP MCP Top 10** — OWASP Foundation, 2025 edition
 
----
+<br>
 
-*End of MCP Integrity Standard v1.0.0*
+### End MCP Integrity Standard v1.0.0
