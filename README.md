@@ -1,6 +1,6 @@
 <div align="center">
 
-# MCP Integrity Standard
+<img width="428" height="441" alt="mcp-integrity-standard" src="https://github.com/user-attachments/assets/4fd0f13a-e6a6-4e67-a295-d414e2017b39" />
 
 Welcome to the **MCP Integrity Standard (MIS)** Security Specification Landing
 
