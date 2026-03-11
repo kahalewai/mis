@@ -60,6 +60,8 @@ The MCP Integrity Standard is to MCP tools what code-signing and SBOM verificati
 
 The MCP Integrity Standard defines requirements for verifying the integrity, provenance, and behavioral declarations of MCP tools and servers. It specifies a signed document format (the Sealed Manifest), discovery conventions, verification procedures, and graduated trust levels.
 
+<br>
+
 ### 1.2 Relationship to MCP
 
 The MCP Integrity Standard operates on top of the Model Context Protocol as an MCP Extension. This standard:
@@ -70,6 +72,8 @@ The MCP Integrity Standard operates on top of the Model Context Protocol as an M
 - SHALL NOT modify or intercept `tools/call` request or response payloads
 - SHALL operate as metadata alongside MCP operations, not as a gatekeeper within them
 - SHALL degrade gracefully when either client or server does not support it
+
+<br>
 
 ### 1.3 Relationship to OWASP MCP Top 10
 
@@ -82,6 +86,8 @@ This standard directly addresses five of the ten risks in the OWASP MCP Top 10 (
 | MCP04: Insecure Tool Discovery | Signed manifests with verified publisher identity prevent tool spoofing, shadowing, and name collision attacks |
 | MCP05: Rug Pull / Server Compromise | Version lineage with hash chaining detects and flags malicious or undisclosed updates |
 | MCP08: Insufficient Logging & Monitoring | Structured verification events provide auditable integrity data |
+
+<br>
 
 ### 1.4 Design Principles
 
@@ -110,9 +116,13 @@ This standard SHALL:
 8. Integrate with MCP as a standard extension with graceful degradation
 9. Define conformance requirements sufficient for independent implementations to interoperate
 
+<br>
+
 ### 2.2 Scope
 
 This standard SHALL specify: the Sealed Manifest format; cryptographic algorithms; interface fingerprint computation; artifact digest computation and verification; side-effect declaration schema; build provenance metadata; version lineage and change classification; multi-party attestation; trust level definitions; key discovery; MCP extension negotiation; discovery mechanisms; verification procedures; client behavior and policy enforcement; conformance requirements; and error codes.
+
+<br>
 
 ### 2.3 Out of Scope
 
@@ -162,6 +172,8 @@ The key words "SHALL", "SHALL NOT", "MUST", "MUST NOT", "REQUIRED", "SHOULD", "S
 
 This standard considers the following threat actors: malicious or compromised publishers; supply-chain attackers who compromise distribution channels; tool poisoners who modify tool descriptions or schemas; rug-pull attackers who push malicious updates after gaining adoption; and tool shadowers who impersonate legitimate tools.
 
+<br>
+
 ### 5.2 Attack Vectors
 
 | ID | Attack Vector | Standard Mitigation |
@@ -176,6 +188,8 @@ This standard considers the following threat actors: malicious or compromised pu
 | T8 | Manifest Forgery | Cryptographic signatures with external key discovery (Section 15) |
 | T9 | Key Substitution | Keys resolved from external trust sources, not embedded in manifests (Section 15) |
 | T10 | Unauditable Tool Usage | Structured verification event logging (Section 19) |
+
+<br>
 
 ### 5.3 Out-of-Scope Threats
 
@@ -194,6 +208,8 @@ The following are acknowledged but not addressed: prompt injection via tool outp
 
 Implementations SHALL NOT use RSA, MD5, SHA-1, DSA, or any algorithm not listed above.
 
+<br>
+
 ### 6.2 Hash Algorithms
 
 | Algorithm | Requirement | Identifier |
@@ -201,11 +217,15 @@ Implementations SHALL NOT use RSA, MD5, SHA-1, DSA, or any algorithm not listed 
 | SHA-256 | REQUIRED | `sha256` |
 | SHA-512 | RECOMMENDED | `sha512` |
 
-All digest values SHALL be represented as lowercase hexadecimal strings prefixed with the algorithm identifier and a colon (e.g., `sha256:0f1e2d3c...`).
+All digest values SHALL be represented as lowercase hexadecimal strings prefixed with the algorithm identifier and a colon (e.g., `sha256:0f1e2d3c...`). All digest values within a single Sealed Manifest SHALL use the same hash algorithm.
+
+<br>
 
 ### 6.3 Canonicalization
 
 Before hashing, all JSON inputs SHALL be canonicalized according to RFC 8785 (JSON Canonicalization Scheme, JCS). Implementations MUST parse the input JSON, serialize according to RFC 8785, encode as UTF-8, and apply the hash algorithm to the resulting byte sequence.
+
+<br>
 
 ### 6.4 Signature Format
 
@@ -225,6 +245,8 @@ signatures: [ { keyid, sig } ]
 
 The Sealed Manifest is the core data structure of this standard. It is a signed JSON document that declares integrity metadata for one or more tools published by a single MCP server.
 
+<br>
+
 ### 7.2 Top-Level Fields
 
 | Field | Type | Required | Description |
@@ -236,6 +258,8 @@ The Sealed Manifest is the core data structure of this standard. It is a signed 
 | `issued_at` | string | REQUIRED | ISO 8601 timestamp of manifest creation. |
 | `expires_at` | string | OPTIONAL | ISO 8601 timestamp after which this manifest SHOULD be re-fetched. |
 
+<br>
+
 ### 7.3 Server Object
 
 | Field | Type | Required | Description |
@@ -245,6 +269,8 @@ The Sealed Manifest is the core data structure of this standard. It is a signed 
 | `publisher.id` | string | REQUIRED | Publisher identifier (e.g., email or domain). |
 | `publisher.namespace` | string | REQUIRED | Registry namespace (e.g., `io.github.acme`). |
 | `publisher.url` | string | OPTIONAL | Publisher's website or profile URL. |
+
+<br>
 
 ### 7.4 Tool Object
 
@@ -260,6 +286,8 @@ Each entry in the `tools` array SHALL contain:
 | `capabilities_required` | array | REQUIRED | Required and optional capabilities. See Section 7.5. |
 | `provenance` | object | OPTIONAL | Build provenance metadata. See Section 11. |
 | `lineage` | object | OPTIONAL | Version lineage information. See Section 12. |
+
+<br>
 
 ### 7.5 Capability Declarations
 
@@ -294,6 +322,8 @@ Custom categories SHOULD be prefixed with a reverse-domain namespace.
 
 Tool interface fingerprinting provides cryptographic detection of modifications to a tool's description, input schema, output schema, and annotations. This is the primary defense against tool poisoning (OWASP MCP03).
 
+<br>
+
 ### 8.2 Interface Object Fields
 
 | Field | Type | Required | Description |
@@ -304,13 +334,19 @@ Tool interface fingerprinting provides cryptographic detection of modifications 
 | `output_schema_digest` | string | OPTIONAL | Hash of the canonicalized JSON output schema object. |
 | `composite_digest` | string | REQUIRED | Hash of the concatenation of all individual digests. Used as the single value for quick verification. |
 
+<br>
+
 ### 8.3 Fingerprint Requirements
 
-Implementations SHALL compute individual digests by hashing each interface component according to Section 6.3. The description string SHALL be hashed as raw UTF-8, not as a JSON value. The composite digest SHALL be computed by hashing the colon-delimited concatenation of all individual digests in the order listed above.
+Implementations SHALL compute individual digests by hashing each interface component according to Section 6.3. The description string SHALL be hashed as raw UTF-8, not as a JSON value. The composite digest SHALL be computed by hashing the colon-delimited concatenation of all individual digests in the order listed above. Fingerprints SHALL be computed independently per tool. Tool ordering within the `tools/list` response SHALL NOT affect individual tool fingerprints.
+
+<br>
 
 ### 8.4 Verification Requirements
 
 Implementations SHALL compare the computed `composite_digest` against the manifest value. On mismatch, individual digests SHALL be compared to identify which component changed. Verification results SHALL indicate match or mismatch per component.
+
+<br>
 
 ### 8.5 Handling Missing Fields
 
@@ -326,6 +362,8 @@ Implementations SHALL compare the computed `composite_digest` against the manife
 
 Artifact integrity verification provides cryptographic detection of modifications to a tool's underlying code, binary, or package, defending against supply-chain tampering (OWASP MCP03, MCP05).
 
+<br>
+
 ### 9.2 Artifact Object Fields
 
 | Field | Type | Required | Description |
@@ -336,6 +374,8 @@ Artifact integrity verification provides cryptographic detection of modification
 | `digest` | string | REQUIRED | Hash of the artifact content. |
 | `download_url` | string | OPTIONAL | URL where the artifact can be obtained. |
 | `digest_scope` | string | OPTIONAL | Scope of the digest: `package`, `entrypoint`, or `bundle`. Default: `package`. |
+
+<br>
 
 ### 9.3 Verification Requirements
 
@@ -348,6 +388,8 @@ For local artifacts, implementations SHALL compute the artifact hash according t
 ### 10.1 Purpose
 
 Side-effect declarations provide machine-readable descriptions of what system resources a tool accesses, enabling permission prompts, policy enforcement, and detection of undeclared behavior (OWASP MCP02).
+
+<br>
 
 ### 10.2 Side-Effect Object Fields
 
@@ -366,6 +408,8 @@ Side-effect declarations provide machine-readable descriptions of what system re
 | `persists_data` | boolean | REQUIRED | Whether the tool stores data persistently beyond the current session. |
 | `human_readable_summary` | string | OPTIONAL | A plain-language summary suitable for display to end users. |
 
+<br>
+
 ### 10.3 Completeness Requirement
 
 Publishers SHALL declare all known side effects. A declaration that omits known behavior is considered inaccurate. Clients SHOULD treat side-effect expansion across versions as a significant change requiring user notification.
@@ -377,6 +421,8 @@ Publishers SHALL declare all known side effects. A declaration that omits known 
 ### 11.1 Purpose
 
 Build provenance links a tool to its source code and build process, enabling auditors to trace from a running tool back to the source repository and commit that produced it.
+
+<br>
 
 ### 11.2 Provenance Object Fields
 
@@ -393,6 +439,8 @@ Build provenance links a tool to its source code and build process, enabling aud
 | `build_attestation_uri` | string | OPTIONAL | URI of the SLSA provenance attestation. |
 | `sbom_uri` | string | OPTIONAL | URI of the Software Bill of Materials (SPDX or CycloneDX). |
 | `reproducible` | boolean | OPTIONAL | Whether the build is reproducible. |
+
+<br>
 
 ### 11.3 Provenance Level Requirements
 
@@ -411,6 +459,8 @@ Build provenance links a tool to its source code and build process, enabling aud
 
 Version lineage creates a cryptographic chain across tool versions, enabling detection of broken chains, unauthorized version insertion, and undisclosed changes.
 
+<br>
+
 ### 12.2 Lineage Object Fields
 
 | Field | Type | Required | Description |
@@ -418,6 +468,8 @@ Version lineage creates a cryptographic chain across tool versions, enabling det
 | `previous_version` | string | REQUIRED at Level 2+ | Version string of the previous release. |
 | `previous_manifest_digest` | string | REQUIRED at Level 2+ | Digest of the complete previous Sealed Manifest. |
 | `changes` | array | REQUIRED at Level 2+ | Array of change classification entries. |
+
+<br>
 
 ### 12.3 Change Classification Fields
 
@@ -431,9 +483,17 @@ Each entry in the `changes` array SHALL contain:
 | `capabilities_changed` | boolean | REQUIRED | Whether the tool's required capabilities changed. |
 | `side_effects_changed` | boolean | REQUIRED | Whether the tool's side-effect declarations changed. |
 
+<br>
+
 ### 12.4 Chain Integrity Requirements
 
 Implementations SHALL compute the digest of the previous Sealed Manifest and compare it against `lineage.previous_manifest_digest`. A mismatch SHALL be reported as a `chain_broken` error. The first version of a tool SHALL omit the `lineage` object or set `previous_version` to `null`. The absence of a `lineage` object on a known non-first version SHALL be reported as a `chain_absent` advisory.
+
+<br>
+
+### 12.5 Version String Format
+
+Version strings SHALL conform to Semantic Versioning 2.0.0 as defined at semver.org. A tool version is considered the first version when its `lineage` object is absent or `previous_version` is `null`.
 
 <br>
 
@@ -442,6 +502,8 @@ Implementations SHALL compute the digest of the previous Sealed Manifest and com
 ### 13.1 Purpose
 
 Multi-party attestation enables independent parties to vouch for specific properties of a tool, providing defense in depth beyond a single publisher's signature.
+
+<br>
 
 ### 13.2 Attestation Object Fields
 
@@ -456,6 +518,8 @@ Multi-party attestation enables independent parties to vouch for specific proper
 | `details` | object | OPTIONAL | Additional attestation-specific metadata. |
 | `expires_at` | string | OPTIONAL | ISO 8601 timestamp after which this attestation is no longer valid. |
 
+<br>
+
 ### 13.3 Attestation Roles
 
 | Role | Description |
@@ -464,6 +528,8 @@ Multi-party attestation enables independent parties to vouch for specific proper
 | `registry` | An MCP registry or package registry. |
 | `scanner` | An automated security analysis tool. |
 | `auditor` | A human security reviewer or audit organization. |
+
+<br>
 
 ### 13.4 Attestation Types
 
@@ -479,6 +545,8 @@ Multi-party attestation enables independent parties to vouch for specific proper
 | `code_review_passed` | auditor | A human reviewer has reviewed and approved the tool's code. |
 | `security_audit_passed` | auditor | A security audit has been completed for this tool. |
 
+<br>
+
 ### 13.5 Signature Scope
 
 All attestation signatures SHALL be computed over the canonical manifest payload. The manifest payload SHALL NOT include the `attestations` array itself; attestations are carried in the DSSE envelope alongside the payload. All attestors sign the same payload.
@@ -491,9 +559,13 @@ All attestation signatures SHALL be computed over the canonical manifest payload
 
 Trust levels communicate the assurance level of a tool's integrity to users, host applications, and policy engines.
 
+<br>
+
 ### 14.2 Level 0: Unsealed
 
 No Sealed Manifest exists for this tool. No integrity guarantees. The client MAY operate in TOFU mode to detect future changes.
+
+<br>
 
 ### 14.3 Level 1: Publisher-Sealed
 
@@ -510,6 +582,8 @@ The publisher has signed a Sealed Manifest containing interface fingerprints.
 | Interface fingerprints match `tools/list` response at verification time | REQUIRED |
 
 Defends against: T1, T2, T3, T7, T8.
+
+<br>
 
 ### 14.4 Level 2: Attested
 
@@ -528,6 +602,8 @@ All Level 1 requirements, plus build provenance, version chaining, and registry 
 
 Defends against: All Level 1 threats plus T4, T5, T6.
 
+<br>
+
 ### 14.5 Level 3: Hardened
 
 All Level 2 requirements, plus independent scanner or auditor attestation and SLSA provenance.
@@ -542,6 +618,8 @@ All Level 2 requirements, plus independent scanner or auditor attestation and SL
 | Scanner attestation of type `side_effects_verified` or `malware_scan_clean` | RECOMMENDED |
 
 Defends against: All Level 2 threats plus T4 and T5 from compromised publishers.
+
+<br>
 
 ### 14.6 Level Determination
 
@@ -564,21 +642,46 @@ Public keys for signature verification SHALL be resolved through one of the foll
 
 Public keys SHALL NOT be embedded in the Sealed Manifest itself.
 
+<br>
+
 ### 15.2 Key Identifier Format
 
 Key identifiers (`key_id`) SHALL uniquely identify a signing key within the scope of a publisher and SHOULD be human-readable (e.g., `acme-ed25519-prod-01`).
+
+<br>
 
 ### 15.3 Key Rotation
 
 Publishers SHOULD rotate signing keys at intervals not exceeding one year. When rotating, publishers SHALL maintain the old public key at discovery endpoints for at least 90 days after the last manifest signed with it.
 
+<br>
+
 ### 15.4 Key Revocation
 
 If a signing key is compromised, the publisher SHALL remove the compromised key from all discovery endpoints, publish a signed key revocation notice, generate a new key pair, re-seal all current manifests, and notify relevant registries. Implementations SHALL check for key revocation before accepting a signature. Manifests signed with revoked keys SHALL be treated as unverified.
 
+<br>
+
 ### 15.5 Key Revocation Notice
 
 A key revocation notice SHALL be a signed JSON document containing: the type identifier `"key_revocation"`; the revoked `key_id`; revocation timestamp; reason; replacement `key_id`; and a signature from the replacement key.
+
+<br>
+
+### 15.6 Revocation Discovery
+
+Publishers SHALL make current revocation notices discoverable at the following well-known endpoint on their publishing domain:
+
+```
+GET https://<publisher-domain>/.well-known/mcp-integrity-revocations.json
+Content-Type: application/json
+```
+
+The publisher domain SHALL be derived from the host component of `server.publisher.url`. `server.publisher.url` SHALL be present on any manifest claiming Trust Level 1 or higher.
+
+This endpoint SHALL return a JSON array of key revocation notices as defined in Section 15.5 of this standard. An empty array indicates no active revocations.
+
+Implementations SHALL fetch and check this endpoint before accepting any signature from a publisher. Implementations SHOULD cache revocation lists for no longer than one hour. If the endpoint is unreachable, implementations SHALL log a `manifest_fetch_failed` advisory event and SHALL NOT block verification solely on revocation check failure.
 
 <br>
 
@@ -602,11 +705,15 @@ This standard SHALL be negotiated as an MCP Extension during the `initialize` ha
 | `seal_level` | integer | The trust level the server claims to meet. Clients SHALL independently verify this claim. |
 | `manifest_url` | string | URL where the Sealed Manifest can be fetched. |
 
+<br>
+
 ### 16.2 Graceful Degradation
 
 - If the server does not declare `mcp-integrity/v1`: the client SHALL treat the server as Level 0 and MAY operate in TOFU mode.
 - If the client does not declare `mcp-integrity/v1`: the server SHALL operate normally with no behavior changes.
 - If the manifest URL is unreachable: the client SHALL treat the server as Level 0 and SHOULD log a `manifest_fetch_failed` event.
+
+<br>
 
 ### 16.3 Lifecycle Events
 
@@ -631,6 +738,8 @@ Implementations SHALL use the following priority order:
 4. MCP Registry API
 5. TOFU mode (no manifest available)
 
+<br>
+
 ### 17.2 `.well-known` Endpoint
 
 For MCP servers accessible via Streamable HTTP, the Sealed Manifest SHOULD be available at:
@@ -640,9 +749,13 @@ GET https://<server-host>/.well-known/mcp-integrity.json
 Content-Type: application/vnd.mcp-integrity.manifest+json
 ```
 
+<br>
+
 ### 17.3 Registry Discovery
 
 For servers registered in the MCP Registry, the Sealed Manifest SHOULD be available at the registry's API. Registries that host Sealed Manifests SHALL validate the manifest schema, verify the publisher attestation signature, and serve manifests in DSSE envelope format.
+
+<br>
 
 ### 17.4 Local File Discovery
 
@@ -662,6 +775,8 @@ For locally installed servers (npm, PyPI, MCPB bundles), the Sealed Manifest SHO
 | V4 | Session-periodic | OPTIONAL — at configurable intervals; NOT RECOMMENDED for intervals shorter than 30 minutes |
 | V5 | Manual | OPTIONAL — when explicitly requested by a user or administrator |
 
+<br>
+
 ### 18.2 Verification Steps
 
 A full verification SHALL proceed in the following order:
@@ -674,6 +789,8 @@ A full verification SHALL proceed in the following order:
 6. **Lineage Verification** (if applicable) — Verify the hash chain per Section 12.4.
 7. **Trust Level Determination** — Evaluate per Section 14.6.
 8. **Result Assembly and Logging** — Assemble the verification result; log the verification event.
+
+<br>
 
 ### 18.3 Verification Result Fields
 
@@ -708,6 +825,8 @@ Host applications SHALL support the following policy modes:
 
 The default policy for new implementations SHOULD be `warn_below_level_1`.
 
+<br>
+
 ### 19.2 TOFU Mode
 
 When no Sealed Manifest is available (Level 0), implementations SHOULD:
@@ -718,6 +837,8 @@ When no Sealed Manifest is available (Level 0), implementations SHOULD:
 4. Allow the user to accept the new fingerprints (updating the cache) or block the tool.
 
 TOFU fingerprints SHALL be stored in a per-host-application cache including at minimum: server name, tool name, composite digest, individual digests, and timestamp of first observation.
+
+<br>
 
 ### 19.3 Audit Logging
 
@@ -764,6 +885,8 @@ A conformant client implementation SHALL:
 8. Log verification events per Section 19.3
 9. Produce identical interface fingerprints for identical `tools/list` inputs as all other conformant implementations
 
+<br>
+
 ### 21.2 Publisher Conformance
 
 A conformant publisher (sealing tool) SHALL:
@@ -774,6 +897,8 @@ A conformant publisher (sealing tool) SHALL:
 4. Include all REQUIRED fields for the declared trust level
 5. Publish manifests through at least one discovery mechanism defined in Section 17
 
+<br>
+
 ### 21.3 Registry Conformance
 
 A conformant registry implementation SHALL:
@@ -783,6 +908,8 @@ A conformant registry implementation SHALL:
 3. Verify publisher attestation signatures before accepting a manifest
 4. Serve manifests with the correct `Content-Type` header
 5. Provide a JWKS endpoint for key discovery
+
+<br>
 
 ### 21.4 Interoperability Requirement
 
@@ -815,7 +942,7 @@ Error codes use the `-33xxx` range to avoid conflicts with MCP's reserved ranges
 | -33050 | `LEVEL_CLAIMED_NOT_MET` | advisory | The server's claimed trust level is not met by verification. |
 | -33060 | `MANIFEST_FETCH_FAILED` | advisory | The manifest URL was unreachable or returned a non-200 response. |
 
----
+<br>
 
 ## 23. Privacy Considerations
 
@@ -836,11 +963,15 @@ Error codes use the `-33xxx` range to avoid conflicts with MCP's reserved ranges
 - **Discovery endpoints are reachable.** If manifest discovery is prevented, the client falls back to TOFU mode. Implementations SHOULD cache manifests to reduce network dependence.
 - **`tools/list` reflects the actual interface.** Interface fingerprinting depends on the `tools/list` response being accurate. A server that returns a benign interface at list time but a different interface at call time cannot be detected by this standard alone.
 
+<br>
+
 ### 24.2 Limitations
 
 - **Self-declared side effects.** Side-effect declarations rely on publisher accuracy. Scanner attestations provide independent verification but are optional at lower trust levels.
 - **Interface fingerprinting is not prompt injection defense.** This standard detects changes to tool descriptions; it does not evaluate whether a description contains malicious instructions.
 - **TOFU first-use vulnerability.** A tool that is poisoned before first client encounter will have its poisoned fingerprint cached as baseline. Publisher-sealed manifests (Level 1+) address this.
+
+<br>
 
 ### 24.3 Recommendations
 
@@ -864,6 +995,8 @@ Error codes use the `-33xxx` range to avoid conflicts with MCP's reserved ranges
 - **FIPS 180-4** — Secure Hash Standard (SHA-256, SHA-512)
 - **DSSE** — Dead Simple Signing Envelope, in-toto project specification
 - **JSON Schema** — JSON Schema: A Media Type for Describing JSON Documents (draft-bhutton-json-schema-01)
+
+<br>
 
 ### Informative References
 
