@@ -26,7 +26,7 @@ The goal of MIS is to make MCP tools inspectable, verifiable, and governable thr
 
 MIS defines a deterministic security and governance model for MCP tool integrity. Rather than relying on transport-layer trust alone, MIS enforces trust through signed declarations and machine-verifiable fingerprints.
 
-The standard is organized around seven control domains, all carried in a single signed document called the **Sealed Manifest**:
+The standard is organized around seven control domains, all carried in a single signed document called the Sealed Manifest:
 
 * Tool Interface Fingerprinting
 * Artifact Integrity
@@ -84,15 +84,14 @@ Even at Level 0, MIS clients provide value through TOFU mode — detecting any c
 
 For the complete formal specification — including definitions, requirements, and conformance criteria — see the full reference document:
 
-[MCP-Integrity-Standard-v1.0.0.md](./MCP-Integrity-Standard-v1.0.0.md)
-
-For implementation guidance, JSON schemas, computation procedures, publisher workflows, test vectors, and example Sealed Manifests, see the supplemental document:
-
-[MCP-Integrity-Standard-Supplemental-v1.0.0.md](./MCP-Integrity-Standard-Supplemental-v1.0.0.md)
+[MCP-Integrity-Standard-v1.0.0.md](https://github.com/kahalewai/mis/blob/main/mis_standard.md)
 
 **Status:** Public Draft for Community Review
+
 **Version:** v1.0.0
+
 **License:** Apache License 2.0
+
 **Date:** 2026-02-24
 
 <br>
@@ -125,13 +124,13 @@ MIS is aligned with the OWASP MCP Top 10 (2025), directly addressing MCP02, MCP0
 
 MIS supports incremental adoption through defined conformance levels for clients, publishers, and registries:
 
-* **Client Level 1** — Parse and verify Sealed Manifests, compute interface fingerprints, support TOFU mode, enforce basic policy modes, and log verification events
+* **Client Level 1** Parse and verify Sealed Manifests, compute interface fingerprints, support TOFU mode, enforce basic policy modes, and log verification events
 
-* **Client Level 2** — Full conformance including artifact verification, lineage chain validation, all discovery mechanisms, and persistent fingerprint caching
+* **Client Level 2** Full conformance including artifact verification, lineage chain validation, all discovery mechanisms, and persistent fingerprint caching
 
-* **Publisher Conformance** — Generate well-formed Sealed Manifests, sign with Ed25519 or ES256, publish through at least one discovery mechanism, and accurately declare side effects and capabilities
+* **Publisher Conformance** Generate well-formed Sealed Manifests, sign with Ed25519 or ES256, publish through at least one discovery mechanism, and accurately declare side effects and capabilities
 
-* **Registry Conformance** — Validate and store Sealed Manifests, verify publisher signatures, serve manifests with correct content types, and provide a JWKS key discovery endpoint
+* **Registry Conformance** Validate and store Sealed Manifests, verify publisher signatures, serve manifests with correct content types, and provide a JWKS key discovery endpoint
 
 Partial adoption is allowed, but implemented controls must not weaken the security guarantees of the controls that are in place.
 
