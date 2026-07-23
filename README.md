@@ -82,7 +82,7 @@ Even at Level 0, MIS clients provide value through TOFU mode — detecting any c
 
 ## View the MIS Security Specification
 
-For the complete formal specification — including definitions, requirements, and conformance criteria — see the full reference document:
+For the complete formal specification, including definitions, requirements, and conformance criteria, see the full reference document:
 
 [MCP-Integrity-Standard-v1.0.0.md](https://github.com/kahalewai/mis/blob/main/mis_standard.md)
 
