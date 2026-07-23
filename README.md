@@ -10,7 +10,7 @@ Welcome to the **MCP Integrity Standard (MIS)** Security Specification Landing
 
 ## Intro
 
-As MCP-based tools move into production and assume critical roles in AI systems, they introduce new and poorly understood integrity risks that extend far beyond transport security and authorization. Tool descriptions, input schemas, annotations, artifact code, side effects, and version updates can all silently change — often without the knowledge of the user, host application, or downstream system. Existing MCP security mechanisms were not designed to detect these changes or bind a tool to the publisher who created it. MCP Integrity Standard (MIS) is a vendor-neutral security standard that defines minimum, enforceable requirements for MCP tool integrity, provenance, behavioral transparency, and continuous verification.
+As MCP-based tools move into production and assume critical roles in AI systems, they introduce new and poorly understood integrity risks that extend far beyond transport security and authorization. Tool descriptions, input schemas, annotations, artifact code, side effects, and version updates can all silently change, often without the knowledge of the user, host application, or downstream system. Existing MCP security mechanisms were not designed to detect these changes or bind a tool to the publisher who created it. MCP Integrity Standard (MIS) is a vendor-neutral security standard that defines minimum, enforceable requirements for MCP tool integrity, provenance, behavioral transparency, and continuous verification.
 
 MIS establishes a clear, cryptographically-anchored trust model for MCP tools by requiring:
 
